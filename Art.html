@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Music Artists</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: white;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .controls {
+      margin-bottom: 20px;
+    }
+
+    input, select {
+      padding: 10px;
+      font-size: 1em;
+      border-radius: 5px;
+      border: 1px solid #444;
+      margin: 5px;
+      background-color: #222;
+      color: white;
+    }
+
+    .artist-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .artist {
+      background-color: #222;
+      border: 1px solid #444;
+      border-radius: 5px;
+      width: 220px;
+      padding: 10px;
+      transition: transform 0.2s, background-color 0.3s;
+    }
+
+    .artist:hover {
+      background-color: #333;
+      transform: scale(1.05);
+    }
+
+    .artist div.title {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    button {
+      margin: 5px;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      background-color: #444;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #555;
+    }
+
+    a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h1>Veyra’s Favorite Music Artists</h1>
+  <div class="controls">
+    <input type="text" id="search" placeholder="Search artists..." onkeyup="renderArtists()">
+    <select id="genreFilter" onchange="renderArtists()">
+      <option value="all">All Genres</option>
+      <option value="pop">Pop</option>
+      <option value="rock">Rock</option>
+      <option value="rap">Rap</option>
+      <option value="country">Country</option>
+    </select>
+  </div>
+
+  <div class="artist-list" id="artistList"></div>
+
+  <script>
+    const artists = [
+      { name: "Niic", genre: "pop" },
+      { name: "When Snake Sings", genre: "pop" },
+      { name: "Robert Grace", genre: "pop" },
+      { name: "Alec Benjamin", genre: "pop" },
+      { name: "Nico Collins", genre: "pop" },
+      { name: "Shawn Mendes", genre: "pop" },
+      { name: "Billie Eilish", genre: "pop" },
+      { name: "AJR", genre: "pop" },
+      { name: "Dua Lipa", genre: "pop" },
+      { name: "Charlie Puth", genre: "pop" },
+      { name: "BardicRJ", genre: "pop" },
+      { name: "Katy Perry", genre: "pop" },
+      { name: "Ivycomb", genre: "pop" },
+      { name: "Bülow", genre: "pop" },
+      { name: "Meghan Trainor", genre: "pop" },
+      { name: "Ariana Grande", genre: "pop" },
+      { name: "Olivia Rodrigo", genre: "pop" },
+      { name: "Ed Sheeran", genre: "pop" },
+      { name: "Post Malone", genre: "pop" },
+      { name: "Lady Gaga", genre: "pop" },
+      { name: "Klace", genre: "pop" },
+      { name: "Pepper Coyote", genre: "pop" },
+      { name: "Cassidy Civet", genre: "pop" },
+      { name: "WHSPRS", genre: "pop" },
+      { name: "Fox Amoore", genre: "pop" },
+      { name: "Au/Ra", genre: "pop" },
+      { name: "CK9C", genre: "pop" },
+      { name: "Ryan Mack", genre: "pop" },
+      { name: "Scratch21", genre: "pop" },
+      { name: "Kennyoung", genre: "pop" },
+      { name: "Verplex", genre: "pop" },
+
+      { name: "Three Days Grace", genre: "rock" },
+      { name: "Crossfade", genre: "rock" },
+      { name: "Powerwolf", genre: "rock" },
+      { name: "Blink 182", genre: "rock" },
+      { name: "Linkin Park", genre: "rock" },
+      { name: "Limp Bizkit", genre: "rock" },
+      { name: "Staind", genre: "rock" },
+      { name: "System of a Down", genre: "rock" },
+      { name: "Slipknot", genre: "rock" },
+      { name: "Skillet", genre: "rock" },
+      { name: "Five Finger Death Punch", genre: "rock" },
+      { name: "Neffex", genre: "rap" },
+      { name: "Ghost", genre: "rock" },
+      { name: "Breaking Benjamin", genre: "rock" },
+      { name: "Avenged Sevenfold", genre: "rock" },
+      { name: "Thousand Foot Krutch", genre: "rock" },
+      { name: "Bon Jovi", genre: "rock" },
+      { name: "Falling In Reverse", genre: "rock" },
+      { name: "Saliva", genre: "rock" },
+      { name: "Trapt", genre: "rock" },
+      { name: "Puddle of Mudd", genre: "rock" },
+      { name: "Shinedown", genre: "rock" },
+      { name: "Seether", genre: "rock" },
+      { name: "Drowning Pool", genre: "rock" },
+      { name: "Saving Abel", genre: "rock" },
+      { name: "Theory of a Deadman", genre: "rock" },
+      { name: "Pop Evil", genre: "rock" },
+      { name: "Finger Eleven", genre: "rock" },
+      { name: "Hinder", genre: "rock" },
+      { name: "Hollywood Undead", genre: "rap" },
+      { name: "Motionless in White", genre: "rock" },
+      { name: "Bring Me the Horizon", genre: "rock" },
+      { name: "Ice Nine Kills", genre: "rock" },
+      { name: "Papa Roach", genre: "rock" },
+      { name: "My Chemical Romance", genre: "rock" },
+      { name: "I Prevail", genre: "rock" },
+      { name: "Foo Fighters", genre: "rock" },
+      { name: "Red Hot Chili Peppers", genre: "rock" },
+      { name: "Nirvana", genre: "rock" },
+      { name: "Disturbed", genre: "rock" },
+      { name: "Godsmack", genre: "rock" },
+      { name: "Evanescence", genre: "rock" },
+      { name: "Korn", genre: "rock" },
+      { name: "Starset", genre: "rock" },
+      { name: "Nothing More", genre: "rock" },
+      { name: "The Used", genre: "rock" },
+      { name: "Sick Puppies", genre: "rock" },
+      { name: "L.A. Guns", genre: "rock" },
+      { name: "Fozzy", genre: "rock" },
+      { name: "Paramore", genre: "rock" },
+      { name: "Thirty Seconds to Mars", genre: "rock" },
+      { name: "Jimmy Eat World", genre: "rock" },
+      { name: "All Time Low", genre: "rock" },
+      { name: "Sum 41", genre: "rock" },
+      { name: "The Offspring", genre: "rock" },
+      { name: "Panic! At The Disco", genre: "rock" },
+      { name: "The Red Jumpsuit Apparatus", genre: "rock" },
+      { name: "Bad Wolves", genre: "rock" },
+      { name: "Switchfoot", genre: "rock" },
+      { name: "The Score", genre: "rock" },
+
+      { name: "P!nk", genre: "pop" },
+      { name: "Dr. Dre", genre: "rap" },
+      { name: "Run DMC", genre: "rap" },
+      { name: "50 Cent", genre: "rap" },
+      { name: "Eminem", genre: "rap" },
+      { name: "NF", genre: "rap" },
+      { name: "DMX", genre: "rap" },
+      { name: "OutKast", genre: "rap" },
+      { name: "The Notorious BIG", genre: "rap" },
+      { name: "2Pac", genre: "rap" },
+      { name: "Ice Cube", genre: "rap" },
+
+      { name: "Johnny Cash", genre: "country" },
+      { name: "George Strait", genre: "country" },
+      { name: "Dolly Parton", genre: "country" },
+      { name: "Willie Nelson", genre: "country" },
+      { name: "Garth Brooks", genre: "country" },
+      { name: "Alan Jackson", genre: "country" },
+      { name: "Brooks & Dunn", genre: "country" },
+      { name: "Tim McGraw", genre: "country" },
+      { name: "Hank Williams Jr.", genre: "country" },
+      { name: "Waylon Jennings", genre: "country" },
+      { name: "The Charlie Daniels Band", genre: "country" },
+      { name: "Lynyrd Skynyrd", genre: "country" },
+      { name: "Luke Bryan", genre: "country" },
+      { name: "Reba McEntire", genre: "country" }
+    ];
+
+    function renderArtists() {
+      const searchValue = document.getElementById("search").value.toLowerCase();
+      const selectedGenre = document.getElementById("genreFilter").value;
+      const artistList = document.getElementById("artistList");
+      artistList.innerHTML = "";
+
+      artists.forEach(artist => {
+        if ((selectedGenre === "all" || artist.genre === selectedGenre) &&
+            artist.name.toLowerCase().includes(searchValue)) {
+          const card = document.createElement("div");
+          card.className = "artist";
+
+          const title = document.createElement("div");
+          title.className = "title";
+
+          const link = document.createElement("a");
+          link.href = `https://www.last.fm/music/${encodeURIComponent(artist.name)}`;
+          link.target = "_blank";
+          link.innerText = artist.name;
+
+          title.appendChild(link);
+          card.appendChild(title);
+
+          const detailsBtn = document.createElement("button");
+          detailsBtn.innerText = "View Details";
+          detailsBtn.onclick = () => fetchArtistDetails(artist.name);
+          card.appendChild(detailsBtn);
+
+          artistList.appendChild(card);
+        }
+      });
+    }
+
+    function fetchArtistDetails(artistName) {
+      const apiKey = "8e26bbd97089082ecdb9721b1d41e480"; // Replace with your actual API key
+      const url = `https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=${encodeURIComponent(artistName)}&api_key=${apiKey}&format=json`;
+
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          if (data && data.artist) {
+            const info = data.artist;
+            let imageUrl = info.image?.length ? info.image[info.image.length - 1]["#text"] : "No image available.";
+            alert(`Artist: ${info.name}\n\nBio: ${info.bio?.summary || "No bio available."}\n\nImage URL: ${imageUrl}`);
+          } else {
+            alert(`No details found for ${artistName}`);
+          }
+        })
+        .catch(err => {
+          console.error("Error fetching details:", err);
+          alert("Error fetching details. Check the console for more info.");
+        });
+    }
+
+    renderArtists();
+  </script>
+</body>
+</html>
